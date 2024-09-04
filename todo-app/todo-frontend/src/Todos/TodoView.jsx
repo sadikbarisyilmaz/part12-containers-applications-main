@@ -3,7 +3,7 @@ import axios from "../util/apiClient";
 
 import List from "./List";
 import Form from "./Form";
-import { TodoHeader } from "./TodoHeader";
+import TodoHeader from "./TodoHeader";
 
 const TodoView = () => {
   const [todos, setTodos] = useState([]);

@@ -1,0 +1,55 @@
+services:
+  app:
+    image: hello-front
+    build:
+      context: ./todo-frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./todo-frontend/:/usr/src/app
+    environment:
+      VITE_BACKEND_URL: http://localhost:8080/api
+    container_name: hello-front-pro
+
+  server:
+    image: hello-back
+    build:
+      context: ./todo-backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./todo-backend/:/usr/src/app
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://the_username:the_password@mongo:27017/the_database
+    container_name: hello-back-pro
+
+  debug-helper:
+    image: busybox
+
+  mongo:
+    image: mongo
+    container_name: hello-mongo
+    volumes:
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./todo-backend/mongo/mongo_data/:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+
+  redis:
+    image: redis
+    container_name: hello-redis
+    volumes:
+      - ./todo-backend/redis_data/:/data
+    command: [ "redis-server", "--appendonly", "yes" ]
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be startedcopy
+      - server # wait for the backend container to be started

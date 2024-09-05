@@ -1,0 +1,21 @@
+.success {
+  color: rgb(13, 110, 0);
+  background: rgb(193, 252, 179);
+  font-size: 20px;
+
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.fail {
+  color: red;
+  background: rgb(248, 186, 186);
+  font-size: 20px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 0.2em 1rem 0.2em 1rem;
+}

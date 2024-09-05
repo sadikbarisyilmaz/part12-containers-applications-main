@@ -1,0 +1,38 @@
+services:
+  app:
+    image: bloglister-frontend-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/:/usr/src/app
+    environment:
+      VITE_BACKEND_URL: http://localhost:8080/api
+    container_name: bloglister-frontend-dev
+
+  server:
+    image: bloglister-backend-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./backend/:/usr/src/app
+    environment:
+      - MONGODB_URI=mongodb+srv://sadikbarisyilmaz:123123123123@cluster0.bbj4og7.mongodb.net/?retryWrites=true&w=majority
+      - PORT=3000
+      - SECRET=sikrit
+    container_name: bloglister-backend-dev
+
+  debug-helper:
+    image: busybox
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: bloglister-reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be startedcopy
+      - server # wait for the backend container to be started
